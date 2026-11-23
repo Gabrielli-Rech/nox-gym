@@ -1,7 +1,13 @@
-const authShell = document.querySelector('#auth-shell');
-const registerSwitch = document.querySelector('.register-switch');
-const loginSwitch = document.querySelector('.login-switch');
-if (authShell && registerSwitch && loginSwitch) {
-    registerSwitch.addEventListener('click', () => authShell.classList.add('active'));
-    loginSwitch.addEventListener('click', () => authShell.classList.remove('active'));
-}
+
+const container = document.getElementById('container');
+
+const signUpButton = document.getElementById('signUp');
+const signInButton = document.getElementById('signIn');
+
+signUpButton.addEventListener('click', () => {
+    container.classList.add('right-panel-active');
+});
+
+signInButton.addEventListener('click', () => {
+    container.classList.remove('right-panel-active');
+});

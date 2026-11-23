@@ -1,57 +1,195 @@
-<?php $pageTitle = 'Nox Gym | Acesso do aluno'; ?>
+
+<?php
+
+require_once __DIR__ . '/config/conexao.php';
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+$erro = '';
+$sucesso = '';
+
+if (isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso') {
+    $sucesso = 'Cadastro realizado! Faça login para continuar.';
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $email = trim($_POST['email'] ?? '');
+    $senha = $_POST['senha'] ?? '';
+
+    $sql = $pdo->prepare(
+        "SELECT id, nome, email, senha
+         FROM usuarios
+         WHERE email = ?
+         AND status = 'ativo'
+         LIMIT 1"
+    );
+
+    $sql->execute([$email]);
+    $usuario = $sql->fetch();
+
+    if ($usuario && password_verify($senha, $usuario['senha'])) {
+
+        session_regenerate_id(true);
+
+        $_SESSION['usuario_id'] = $usuario['id'];
+        $_SESSION['usuario_nome'] = $usuario['nome'];
+        $_SESSION['usuario_email'] = $usuario['email'];
+
+        header('Location: perfil.php');
+        exit;
+
+    } else {
+        $erro = 'E-mail ou senha incorretos.';
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <title>Login | Nox Gym</title>
+
     <link rel="stylesheet" href="assets/css/login.css">
+    <script src="assets/js/login.js" defer></script>
 </head>
 
 <body>
-    <a class="back-home" href="index.php">← Voltar ao site</a>
-    <div class="auth-shell" id="auth-shell">
-        <section class="auth-form login-form">
-            <form action="#" method="post">
-                <span class="mini-brand">NOX<span>GYM</span></span>
-                <p class="eyebrow">Sua jornada continua</p>
-                <h1>Bem-vindo<br>de volta.</h1>
-                <label>Usuário ou e-mail<input type="text" name="usuario" placeholder="Digite seu usuário" autocomplete="username" required></label>
-                <label>Senha<input type="password" name="senha" placeholder="Digite sua senha" autocomplete="current-password" required></label>
-                <button class="auth-button" type="submit">Entrar na conta ↗</button>
-                <small>Autenticação será conectada ao banco de dados na etapa 2.</small>
-            </form>
-        </section>
-        <section class="auth-form register-form">
-            <form action="#" method="post">
-                <span class="mini-brand">NOX<span>GYM</span></span>
-                <p class="eyebrow">Faça parte do movimento</p>
-                <h1>Crie sua<br>conta.</h1>
-                <label>Nome completo<input type="text" name="nome" placeholder="Seu nome" autocomplete="name" required></label>
-                <label>E-mail<input type="email" name="email" placeholder="voce@email.com" autocomplete="email" required></label>
-                <label>Senha<input type="password" name="senha" placeholder="Crie uma senha" autocomplete="new-password" required></label>
-                <button class="auth-button cyan" type="submit">Criar cadastro ↗</button>
-                <small>Cadastro demonstrativo de interface nesta etapa.</small>
-            </form>
-        </section>
-        <div class="slide-panel">
-            <div class="slide-content slide-left"><span class="panel-mark">N</span>
-                <p class="eyebrow">Disciplina. Foco. Evolução.</p>
-                <h2>Seu próximo<br>nível espera.</h2>
-                <p>Ainda não faz parte da Nox?</p><button class="switch-button register-switch" type="button">Criar minha conta</button>
-            </div>
-            <div class="slide-content slide-right"><span class="panel-mark">N</span>
-                <p class="eyebrow">Bom ter você de volta.</p>
-                <h2>Continue<br>em movimento.</h2>
-                <p>Já possui cadastro?</p><button class="switch-button login-switch" type="button">Fazer login</button>
-            </div>
-        </div>
-    </div>
-    <script src="assets/js/login.js" defer></script>
-</body>
 
+<div class="container" id="container">
+
+    <!-- CADASTRO -->
+    <div class="form-container sign-up-container">
+
+        <form action="cadastro.php" method="POST">
+
+            <h1>Criar conta</h1>
+
+            <p>Comece sua evolução com a Nox Gym.</p>
+
+            <input
+                type="text"
+                name="nome"
+                placeholder="Nome completo"
+                maxlength="120"
+                required
+            >
+
+            <input
+                type="email"
+                name="email"
+                placeholder="E-mail"
+                maxlength="150"
+                required
+            >
+
+            <input
+                type="tel"
+                name="telefone"
+                placeholder="Telefone"
+                maxlength="20"
+            >
+
+            <input
+                type="password"
+                name="senha"
+                placeholder="Senha (mínimo 8 caracteres)"
+                minlength="8"
+                required
+            >
+
+            <button type="submit">CADASTRAR</button>
+
+        </form>
+
+    </div>
+
+    <!-- LOGIN -->
+    <div class="form-container sign-in-container">
+
+        <form action="login.php" method="POST">
+
+            <h1>Bem-vindo de volta</h1>
+
+            <p>Acesse sua conta e continue sua jornada.</p>
+
+            <?php if ($erro): ?>
+                <div class="mensagem erro">
+                    <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($sucesso): ?>
+                <div class="mensagem sucesso">
+                    <?= htmlspecialchars($sucesso, ENT_QUOTES, 'UTF-8') ?>
+                </div>
+            <?php endif; ?>
+
+            <input
+                type="email"
+                name="email"
+                placeholder="E-mail"
+                required
+            >
+
+            <input
+                type="password"
+                name="senha"
+                placeholder="Senha"
+                required
+            >
+
+            <button type="submit">ENTRAR</button>
+
+        </form>
+
+    </div>
+
+    <!-- PAINEL ANIMADO -->
+    <div class="overlay-container">
+
+        <div class="overlay">
+
+            <div class="overlay-panel overlay-left">
+
+                <h1>Você já faz parte?</h1>
+
+                <p>
+                    Entre na sua conta e continue superando seus limites.
+                </p>
+
+                <button class="ghost" id="signIn" type="button">
+                    FAZER LOGIN
+                </button>
+
+            </div>
+
+            <div class="overlay-panel overlay-right">
+
+                <h1>Supere seus limites!</h1>
+
+                <p>
+                    Crie sua conta e comece sua transformação com a Nox Gym.
+                </p>
+
+                <button class="ghost" id="signUp" type="button">
+                    CRIAR CONTA
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
 </html>
