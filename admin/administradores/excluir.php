@@ -1,185 +1,35 @@
-
 <?php
-
-require_once __DIR__ . '/../../config/conexao.php';
-require_once __DIR__ . '/../../includes/autenticacao_admin.php';
-
-exigirAdmin();
-
-if (!function_exists('escapar')) {
-    function escapar($valor): string {
-        return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
-    }
-}
-
-$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
-if (!$id || $id <= 0) {
-    header('Location: index.php?erro=id_invalido');
-    exit;
-}
-
-if (empty($_SESSION['csrf_admin'])) {
-    $_SESSION['csrf_admin'] = bin2hex(random_bytes(32));
-}
-
+require_once __DIR__ . '/../inicio.php';
+$id = idConsulta();
+$administrador = exigirRegistro(consulta($pdo, 'SELECT nome, email, status FROM administradores WHERE id = ?', [$id])->fetch());
 $erro = '';
-
-$consulta = $pdo->prepare(
-    "SELECT id, nome, email, status
-     FROM administradores
-     WHERE id = ?
-     LIMIT 1"
-);
-
-$consulta->execute([$id]);
-$administrador = $consulta->fetch();
-
-if (!$administrador) {
-    header('Location: index.php?erro=nao_encontrado');
-    exit;
-}
-
-// Impede que o administrador exclua a própria conta.
-if ((int) $administrador['id'] === (int) $_SESSION['admin_id']) {
-    header('Location: index.php?erro=autoexclusao');
-    exit;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $token = $_POST['csrf_token'] ?? '';
-
-    if (
-        !is_string($token) ||
-        !hash_equals($_SESSION['csrf_admin'], $token)
-    ) {
-        $erro = 'Solicitação inválida. Atualize a página e tente novamente.';
-
+    verificarCsrf();
+    if ($id === (int) $_SESSION['admin_id']) {
+        $erro = 'Você não pode desativar a conta com a qual está conectado.';
     } else {
-
-        try {
-
-            $pdo->beginTransaction();
-
-            // Bloqueia o registro que será excluído.
-            $consultaAdmin = $pdo->prepare(
-                "SELECT id, nome, email, status
-                 FROM administradores
-                 WHERE id = ?
-                 FOR UPDATE"
-            );
-
-            $consultaAdmin->execute([$id]);
-            $adminExcluir = $consultaAdmin->fetch();
-
-            if (!$adminExcluir) {
-                throw new RuntimeException(
-                    'Administrador não encontrado.'
-                );
-            }
-
-            // Confere novamente se não é a própria conta.
-            if ((int) $adminExcluir['id'] === (int) $_SESSION['admin_id']) {
-                throw new RuntimeException(
-                    'Você não pode excluir sua própria conta.'
-                );
-            }
-
-            // Bloqueia e consulta os administradores ativos.
-            $consultaAtivos = $pdo->query(
-                "SELECT id
-                 FROM administradores
-                 WHERE status = 'ativo'
-                 FOR UPDATE"
-            );
-
-            $administradoresAtivos = $consultaAtivos->fetchAll();
-            $totalAtivos = count($administradoresAtivos);
-
-            // Impede excluir o último administrador ativo.
-            if (
-                $adminExcluir['status'] === 'ativo' &&
-                $totalAtivos <= 1
-            ) {
-                throw new RuntimeException(
-                    'Não é possível excluir o último administrador ativo.'
-                );
-            }
-
-            $nomeExcluido = $adminExcluir['nome'];
-            $emailExcluido = $adminExcluir['email'];
-
-            // Preserva os logs, removendo apenas a referência ao administrador.
-            $desvincularLogs = $pdo->prepare(
-                "UPDATE logs_admin
-                 SET administrador_id = NULL
-                 WHERE administrador_id = ?"
-            );
-
-            $desvincularLogs->execute([$id]);
-
-            // Registra a exclusão no histórico.
-            $registrarLog = $pdo->prepare(
-                "INSERT INTO logs_admin
-                    (administrador_id, acao, descricao)
-                 VALUES
-                    (NULL, ?, ?)"
-            );
-
-            $registrarLog->execute([
-                'administrador_excluido',
-                'O administrador ' . $nomeExcluido .
-                ' (' . $emailExcluido . ') foi excluído por ' .
-                ($_SESSION['admin_nome'] ?? 'Administrador') . '.'
-            ]);
-
-            // Exclui o administrador.
-            $excluir = $pdo->prepare(
-                "DELETE FROM administradores
-                 WHERE id = ?"
-            );
-
-            $excluir->execute([$id]);
-
+        $pdo->beginTransaction();
+        $ativos = consulta($pdo, "SELECT id FROM administradores WHERE status = 'ativo' ORDER BY id FOR UPDATE")->fetchAll(PDO::FETCH_COLUMN);
+        if (in_array($id, $ativos, true) && count($ativos) === 1) {
+            $pdo->rollBack();
+            $erro = 'Mantenha pelo menos um administrador ativo.';
+        } else {
+            gravarRegistro($pdo, 'administradores', ['status' => 'inativo'], $id);
+            logAdmin($pdo, 'administrador_desativado', $id);
             $pdo->commit();
-
-            // Atualiza o token após a operação.
-            $_SESSION['csrf_admin'] = bin2hex(random_bytes(32));
-
-            header('Location: index.php?sucesso=excluido');
-            exit;
-
-        } catch (RuntimeException $e) {
-
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
-
-            $erro = $e->getMessage();
-
-        } catch (PDOException $e) {
-
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
-
-            error_log($e->getMessage());
-
-            $erro = 'Não foi possível excluir o administrador. Verifique as dependências do banco de dados e tente novamente.';
+            $_SESSION['aviso_nox'] = 'Administrador desativado.';
+            redirecionar('index.php');
         }
     }
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Excluir Administrador | Nox Gym</title>
+    <title>Desativar Administrador | Nox Gym</title>
 
     <link rel="stylesheet" href="../../assets/css/admin/admin.css">
 
@@ -217,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <header class="admin-topbar">
             <div>
-                <h2>Excluir administrador</h2>
+                <h2>Desativar administrador</h2>
             </div>
 
             <div>
@@ -226,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </span>
             </div>
         </header>
+        <?php require __DIR__ . '/../../includes/menu_painel_mobile.php'; ?>
 
         <section class="delete-page">
 
@@ -237,11 +88,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="delete-icon">!</div>
 
-                <h1>Confirmar exclusão</h1>
+                <h1>Confirmar desativação</h1>
 
                 <p class="delete-description">
-                    Você está prestes a excluir permanentemente este
-                    administrador da Nox Gym.
+                    Você está prestes a desativar o acesso deste administrador.
                 </p>
 
                 <div class="delete-user">
@@ -265,9 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="delete-warning">
                     <strong>Atenção:</strong>
-                    essa ação não poderá ser desfeita. Os registros
-                    anteriores de auditoria serão preservados, mas
-                    deixarão de estar vinculados a este administrador.
+                    A conta perderá acesso ao painel. Seus vínculos e registros de auditoria serão preservados.
                 </div>
 
                 <?php if ($erro !== ''): ?>
@@ -278,11 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <form method="POST" action="?id=<?= (int) $id ?>">
 
-                    <input
-                        type="hidden"
-                        name="csrf_token"
-                        value="<?= escapar($_SESSION['csrf_admin']) ?>"
-                    >
+                    <?php campoCsrf(); ?>
 
                     <div class="delete-actions">
 
@@ -291,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </a>
 
                         <button type="submit" class="delete-button">
-                            Confirmar exclusão
+                            Confirmar desativação
                         </button>
 
                     </div>

@@ -14,6 +14,7 @@
         <div>
             <strong>Contato</strong>
             <a href="contato.php">Fale com nossa equipe</a>
+            <a href="instrutor/login.php">Área do instrutor</a>
             <span>Segunda a sábado · 06h às 22h</span>
         </div>
     </div>

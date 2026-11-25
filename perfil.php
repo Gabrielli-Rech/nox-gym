@@ -1,60 +1,15 @@
-
 <?php
-
-require_once __DIR__ . '/config/conexao.php';
 require_once __DIR__ . '/includes/autenticacao.php';
-
-exigirLogin();
-
-$sql = $pdo->prepare(
-    "SELECT id, nome, email, telefone, foto, criado_em
-     FROM usuarios
-     WHERE id = ?
-     AND status = 'ativo'
-     LIMIT 1"
-);
-
-$sql->execute([$_SESSION['usuario_id']]);
-
-$usuario = $sql->fetch();
-
-if (!$usuario) {
-    $_SESSION = [];
-    session_destroy();
-
-    header('Location: login.php');
-    exit;
-}
-
+require_once __DIR__ . '/includes/assinaturas_dados.php';
+$usuario = exigirLogin();
+$assinatura = assinaturasAluno($pdo, (int) $usuario['id'])[0] ?? null;
+$treinoAtual = consulta($pdo, "SELECT id, nome FROM treinos
+    WHERE usuario_id = ? AND status = 'ativo'
+    ORDER BY (data_inicio <= CURRENT_DATE AND (data_fim IS NULL OR data_fim >= CURRENT_DATE)) DESC, data_inicio DESC, id DESC LIMIT 1",
+    [$usuario['id']])->fetch();
+$titulo = 'Meu Perfil';
+require __DIR__ . '/includes/aluno_cabecalho.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Meu Perfil | Nox Gym</title>
-
-    <link rel="stylesheet" href="assets/css/perfil.css">
-</head>
-
-<body>
-
-<header class="topbar">
-    <a href="index.php" class="logo">NOX<span>GYM</span></a>
-
-    <nav>
-        <a href="index.php">Início</a>
-        <a href="planos.php">Planos</a>
-        <a href="treinos.php">Treinos</a>
-        <a href="logout.php" class="sair">Sair</a>
-    </nav>
-</header>
-
-<main class="perfil-container">
-
     <section class="boas-vindas">
         <div>
             <span class="tag">ÁREA DO ALUNO</span>
@@ -68,14 +23,14 @@ if (!$usuario) {
     <section class="perfil-card">
 
         <div class="perfil-avatar">
-            <?php if (!empty($usuario['foto'])): ?>
+            <?php if (caminhoImagem($usuario['foto'] ?? '')): ?>
                 <img
                     src="<?= htmlspecialchars($usuario['foto'], ENT_QUOTES, 'UTF-8') ?>"
                     alt="Foto do aluno"
                 >
             <?php else: ?>
                 <span>
-                    <?= strtoupper(substr($usuario['nome'], 0, 1)) ?>
+                    <?= escapar(mb_strtoupper(mb_substr($usuario['nome'], 0, 1))) ?>
                 </span>
             <?php endif; ?>
         </div>
@@ -94,6 +49,10 @@ if (!$usuario) {
             </p>
 
             <p>
+                <strong>Nascimento:</strong>
+                <?= escapar($usuario['data_nascimento'] ?? 'Não informado') ?>
+            </p>
+            <p>
                 <strong>Membro desde:</strong>
                 <?= date('d/m/Y', strtotime($usuario['criado_em'])) ?>
             </p>
@@ -103,16 +62,20 @@ if (!$usuario) {
 
     <section class="atalhos">
 
-        <a href="planos.php" class="atalho">
+        <a href="minha_assinatura.php" class="atalho">
             <span class="icone">✦</span>
-            <h3>Planos</h3>
-            <p>Conheça nossos planos.</p>
+            <h3>Minha assinatura</h3>
+            <?php if ($assinatura): ?>
+                <p><?= escapar($assinatura['nome']) ?> · <?= escapar($assinatura['situacao']) ?> · Até <?= escapar($assinatura['data_fim']) ?></p>
+            <?php else: ?>
+                <p>Nenhuma assinatura cadastrada.</p>
+            <?php endif; ?>
         </a>
 
-        <a href="treinos.php" class="atalho">
+        <a href="meus_treinos.php<?= $treinoAtual ? '?id=' . (int) $treinoAtual['id'] : '' ?>" class="atalho">
             <span class="icone">✦</span>
             <h3>Treinos</h3>
-            <p>Explore opções de treinamento.</p>
+            <p><?= escapar($treinoAtual['nome'] ?? 'Consulte seus treinos personalizados.') ?></p>
         </a>
 
         <a href="calculadora.php" class="atalho">
@@ -129,11 +92,4 @@ if (!$usuario) {
 
     </section>
 
-</main>
-
-<footer>
-    <p>© <?= date('Y') ?> NOX GYM — Supere seus limites.</p>
-</footer>
-
-</body>
-</html>
+<?php require __DIR__ . '/includes/aluno_rodape.php'; ?>

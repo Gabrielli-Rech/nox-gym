@@ -1817,3 +1817,51 @@ a {
         padding: 22px;
     }
 }
+
+.form-field textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 13px;
+    color: var(--white);
+    background: #0C1420;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: 11px 'DM Sans', sans-serif;
+    resize: vertical;
+}
+
+.form-field textarea:focus {
+    outline: 1px solid var(--volt);
+}
+
+.painel-menu-mobile {
+    display: none;
+}
+
+button.logout-button {
+    border: 0;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+}
+
+@media (max-width: 650px) {
+    .painel-menu-mobile {
+        display: block;
+        padding: 10px 16px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .painel-menu-mobile .sidebar-nav {
+        margin-top: 10px;
+    }
+}
+
+.dashboard-panel ol {
+    padding-inline-start: 24px;
+}
+
+.dashboard-panel li + li {
+    margin-top: 12px;
+}

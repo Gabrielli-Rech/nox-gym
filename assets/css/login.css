@@ -256,3 +256,33 @@ button.ghost {
         padding: 12px 22px;
     }
 }
+
+.acessos-nox {
+    position: fixed;
+    bottom: 12px;
+    inset-inline: 0;
+    text-align: center;
+}
+
+.acessos-nox a {
+    color: inherit;
+}
+
+@media (max-width: 480px) {
+    form {
+        padding: 0 12px;
+    }
+
+    .overlay-panel {
+        padding: 0 10px;
+    }
+
+    .overlay-panel h1,
+    h1 {
+        font-size: 19px;
+    }
+
+    button {
+        padding-inline: 10px;
+    }
+}

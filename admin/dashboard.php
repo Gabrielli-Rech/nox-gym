@@ -1,10 +1,7 @@
-
 <?php
 
-require_once __DIR__ . '/../config/conexao.php';
-require_once __DIR__ . '/../includes/autenticacao_admin.php';
-
-exigirAdmin();
+require_once __DIR__ . '/inicio.php';
+$prefixo = './';
 
 if (!function_exists('escapar')) {
     function escapar($valor): string {
@@ -28,7 +25,7 @@ function contarRegistros(PDO $pdo, string $tabela): int {
     try {
         return (int) $pdo->query("SELECT COUNT(*) FROM `$tabela`")->fetchColumn();
     } catch (PDOException $e) {
-        error_log($e->getMessage());
+        error_log('NOX GYM: falha em operação administrativa.');
         return 0;
     }
 }
@@ -120,6 +117,11 @@ $dataFormatada = $dataAtual->format('d/m/Y');
         </div>
 
         <nav class="sidebar-nav">
+            <a href="alunos/index.php" class="nav-item"><span class="nav-icon">▤</span><span>Alunos</span></a>
+            <a href="planos/index.php" class="nav-item"><span class="nav-icon">▤</span><span>Planos</span></a>
+            <a href="assinaturas/index.php" class="nav-item"><span class="nav-icon">▤</span><span>Assinaturas</span></a>
+            <a href="exercicios/index.php" class="nav-item"><span class="nav-icon">▤</span><span>Exercícios</span></a>
+            <a href="treinos/index.php" class="nav-item"><span class="nav-icon">▤</span><span>Treinos</span></a>
             <a href="../index.php" class="nav-item">
                 <span class="nav-icon">↗</span>
                 <span>Visualizar site</span>
@@ -138,9 +140,9 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                     <small>Administrador</small>
                 </div>
 
-                <a href="logout.php" class="logout-button" title="Sair">
+                <form method="post" action="logout.php"><?php campoCsrf(); ?><button class="logout-button" type="submit" aria-label="Sair">
                     ↪
-                </a>
+                </button></form>
             </div>
 
             <div class="sidebar-version">
@@ -184,6 +186,7 @@ $dataFormatada = $dataAtual->format('d/m/Y');
             </div>
 
         </header>
+        <?php require __DIR__ . '/../includes/menu_painel_mobile.php'; ?>
 
         <!-- CONTENT -->
         <div class="dashboard-content">

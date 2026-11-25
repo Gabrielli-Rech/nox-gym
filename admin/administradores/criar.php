@@ -1,10 +1,6 @@
-
 <?php
 
-require_once __DIR__ . '/../../config/conexao.php';
-require_once __DIR__ . '/../../includes/autenticacao_admin.php';
-
-exigirAdmin();
+require_once __DIR__ . '/../inicio.php';
 
 if (!function_exists('escapar')) {
     function escapar($valor): string
@@ -19,12 +15,13 @@ $email = '';
 $status = 'ativo';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verificarCsrf();
 
-    $nome = trim($_POST['nome'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $senha = $_POST['senha'] ?? '';
-    $confirmarSenha = $_POST['confirmar_senha'] ?? '';
-    $status = $_POST['status'] ?? 'ativo';
+    $nome = trim(entrada($_POST, 'nome'));
+    $email = trim(entrada($_POST, 'email'));
+    $senha = entrada($_POST, 'senha');
+    $confirmarSenha = entrada($_POST, 'confirmar_senha');
+    $status = entrada($_POST, 'status');
 
     if ($nome === '' || $email === '' || $senha === '' || $confirmarSenha === '') {
         $erro = 'Preencha todos os campos obrigatórios.';
@@ -38,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (strlen($email) > 150) {
         $erro = 'O e-mail deve ter no máximo 150 caracteres.';
 
-    } elseif (strlen($senha) < 8) {
+    } elseif ((strlen($senha) < 8 || strlen($senha) > 72 || str_contains($senha, "\0"))) {
         $erro = 'A senha deve possuir pelo menos 8 caracteres.';
 
     } elseif ($senha !== $confirmarSenha) {
@@ -71,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     VALUES (?, ?, ?, ?, NOW(), NOW())"
                 );
 
+                $pdo->beginTransaction();
                 $sql->execute([
                     $nome,
                     $email,
@@ -78,13 +76,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $status
                 ]);
 
+                logAdmin($pdo, 'administrador_criado', (int) $pdo->lastInsertId());
+                $pdo->commit();
                 header('Location: index.php?sucesso=criado');
                 exit;
             }
 
         } catch (PDOException $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
 
-            error_log($e->getMessage());
+            error_log('NOX GYM: falha em operação administrativa.');
             $erro = 'Não foi possível cadastrar o administrador.';
         }
     }
@@ -182,7 +185,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
                     <small>Administrador</small>
                 </div>
 
-                <a href="../logout.php" class="logout-button" title="Sair">↪</a>
+                <form method="post" action="../logout.php"><?php campoCsrf(); ?><button class="logout-button" type="submit" aria-label="Sair">↪</button></form>
 
             </div>
 
@@ -226,6 +229,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
             </div>
 
         </header>
+        <?php require __DIR__ . '/../../includes/menu_painel_mobile.php'; ?>
 
         <div class="dashboard-content">
 
@@ -273,6 +277,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
                     <?php endif; ?>
 
                     <form method="POST" class="admin-create-form">
+                        <?php campoCsrf(); ?>
 
                         <div class="form-field">
 

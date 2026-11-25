@@ -1,23 +1,25 @@
-
 <?php
 
-require_once __DIR__ . '/config/conexao.php';
-
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+require_once __DIR__ . '/includes/formularios.php';
+sessaoNox();
+tratarErrosBanco();
 
 $erro = '';
 $sucesso = '';
+$cadastroErro = $_SESSION['cadastro_erro'] ?? '';
+unset($_SESSION['cadastro_erro']);
 
-if (isset($_GET['cadastro']) && $_GET['cadastro'] === 'sucesso') {
+if (!empty($_SESSION['cadastro_sucesso'])) {
+    unset($_SESSION['cadastro_sucesso']);
     $sucesso = 'Cadastro realizado! Faça login para continuar.';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verificarCsrf();
+    require_once __DIR__ . '/config/conexao.php';
 
-    $email = trim($_POST['email'] ?? '');
-    $senha = $_POST['senha'] ?? '';
+    $email = trim(entrada($_POST, 'email'));
+    $senha = entrada($_POST, 'senha');
 
     $sql = $pdo->prepare(
         "SELECT id, nome, email, senha
@@ -33,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($usuario && password_verify($senha, $usuario['senha'])) {
 
         session_regenerate_id(true);
+        $_SESSION = [];
 
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['usuario_nome'] = $usuario['nome'];
@@ -63,12 +66,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
 
-<div class="container" id="container">
+<div class="container<?= isset($_GET['cadastro']) ? ' right-panel-active' : '' ?>" id="container">
 
     <!-- CADASTRO -->
     <div class="form-container sign-up-container">
 
         <form action="cadastro.php" method="POST">
+            <?php if ($cadastroErro): ?><p class="mensagem erro" role="alert"><?= escapar($cadastroErro) ?></p><?php endif; ?>
+            <?php campoCsrf(); ?>
 
             <h1>Criar conta</h1>
 
@@ -115,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="form-container sign-in-container">
 
         <form action="login.php" method="POST">
+            <?php campoCsrf(); ?>
 
             <h1>Bem-vindo de volta</h1>
 
@@ -191,5 +197,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 </div>
 
+<p class="acessos-nox"><a href="index.php">Voltar ao site</a> · <a href="instrutor/login.php">Área do instrutor</a></p>
 </body>
 </html>

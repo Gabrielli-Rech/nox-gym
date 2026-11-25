@@ -1,4 +1,5 @@
 <?php $pageTitle = 'Nox Gym | Sobre';
+require_once __DIR__ . '/includes/conteudos_publicos.php';
 require_once __DIR__ . '/includes/header.php'; ?>
 
 <section class="page-hero">
@@ -9,11 +10,11 @@ require_once __DIR__ . '/includes/header.php'; ?>
 </section>
 <section class="section">
     <div class="container split">
-        <div><span class="section-kicker">Quem somos</span>
-            <h2>Construída para quem não para.</h2>
-            <p>Somos uma academia orientada à alta performance, com foco em oferecer uma experiência de treinamento acolhedora, consistente e preparada para diferentes objetivos.</p>
+        <div><span class="section-kicker"><?= conteudo('sobre_historia', 'subtitulo', 'Quem somos') ?></span>
+            <h2><?= conteudo('sobre_historia', 'titulo', 'Construída para quem não para.') ?></h2>
+            <p><?= conteudo('sobre_historia', 'texto', 'Somos uma academia orientada à alta performance, com foco em oferecer uma experiência de treinamento acolhedora, consistente e preparada para diferentes objetivos.') ?></p>
             <p>Nosso compromisso é incentivar hábitos saudáveis e apoiar cada pessoa em sua própria jornada, respeitando seus limites e celebrando sua evolução.</p><a class="btn" href="contato.php">Fale com a equipe</a>
-        </div><img src="assets/img/academ.jpg" alt="Ambiente de academia">
+        </div><img src="<?= imagemConteudo('sobre_historia', 'assets/img/academ.jpg') ?>" alt="Ambiente de academia">
     </div>
 </section>
 <section class="section" style="padding-top:0">
