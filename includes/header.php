@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/formularios.php';
+sessaoNox();
+$areaAluno = empty($_SESSION['usuario_id']) ? 'login.php' : 'perfil.php';
 $pageTitle = $pageTitle ?? 'Nox Gym | Alta performance';
 $currentPage = basename($_SERVER['PHP_SELF'] ?? 'index.php');
 $navItems = [
@@ -41,7 +44,7 @@ $navItems = [
                     </a>
                 <?php endforeach; ?>
             </nav>
-            <a class="nav-cta" href="login.php">Área do aluno <span aria-hidden="true">↗</span></a>
+            <a class="nav-cta" href="<?= $areaAluno ?>">Área do aluno <span aria-hidden="true">↗</span></a>
         </div>
     </header>
     <main>

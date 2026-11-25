@@ -1,4 +1,5 @@
 <?php $pageTitle = 'Nox Gym | Treinos';
+require_once __DIR__ . '/includes/imagem_publica.php';
 require_once __DIR__ . '/includes/header.php'; ?>
 
 <section class="page-hero">
@@ -9,19 +10,19 @@ require_once __DIR__ . '/includes/header.php'; ?>
 </section>
 <section class="section">
     <div class="container grid">
-        <article class="card"><img src="assets/img/musc.jpg" alt="Musculação">
+        <article class="card"><?php imagemPublica('assets/img/musc.jpg', 'Musculação', 'assets/img/academ.jpg'); ?>
             <div class="card-body"><span class="card-tag">Força</span>
                 <h3>Musculação</h3>
                 <p>Exercícios resistidos para força e hipertrofia, respeitando seu nível e seus objetivos.</p>
             </div>
         </article>
-        <article class="card"><img src="assets/img/Cardio.jpg" alt="Cardio">
+        <article class="card"><?php imagemPublica('assets/img/Cardio.jpg', 'Cardio', 'assets/img/academ.jpg'); ?>
             <div class="card-body"><span class="card-tag">Resistência</span>
                 <h3>Cardio</h3>
                 <p>Atividades para desenvolver capacidade cardiorrespiratória e disposição.</p>
             </div>
         </article>
-        <article class="card"><img src="assets/img/toraxEabdomen.png" alt="Treino de core">
+        <article class="card"><?php imagemPublica('assets/img/toraxEabdomen.png', 'Treino de core', 'assets/img/academ.jpg'); ?>
             <div class="card-body"><span class="card-tag">Estabilidade</span>
                 <h3>Core</h3>
                 <p>Fortalecimento da região central para estabilidade e controle corporal.</p>

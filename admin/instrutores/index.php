@@ -1,10 +1,6 @@
-
 <?php
 
-require_once __DIR__ . '/../../config/conexao.php';
-require_once __DIR__ . '/../../includes/autenticacao_admin.php';
-
-exigirAdmin();
+require_once __DIR__ . '/../inicio.php';
 
 if (!function_exists('escapar')) {
     function escapar($valor): string {
@@ -16,8 +12,8 @@ if (!function_exists('escapar')) {
 // FILTROS
 // ========================================
 
-$busca = trim($_GET['busca'] ?? '');
-$status = $_GET['status'] ?? '';
+$busca = trim(entrada($_GET, 'busca'));
+$status = entrada($_GET, 'status');
 
 if (!in_array($status, ['', 'ativo', 'inativo'], true)) {
     $status = '';
@@ -213,10 +209,10 @@ $instrutores = $consulta->fetchAll();
 
             </div>
 
-            <a href="../logout.php" class="logout-button">
+            <form method="post" action="../logout.php"><?php campoCsrf(); ?><button class="logout-button" type="submit" aria-label="Sair">
                 <span>↪</span>
                 Sair do painel
-            </a>
+            </button></form>
 
             <div class="sidebar-version">
                 NOX GYM SYSTEM • V1.0
@@ -252,8 +248,12 @@ $instrutores = $consulta->fetchAll();
             </div>
 
         </header>
+        <?php require __DIR__ . '/../../includes/menu_painel_mobile.php'; ?>
 
         <section class="instructors-content">
+<?php if (isset($_SESSION['aviso_nox'])): ?>
+<p role="status"><?= escapar($_SESSION['aviso_nox']) ?></p>
+<?php unset($_SESSION['aviso_nox']); endif; ?>
 
             <!-- CABEÇALHO -->
 
@@ -481,7 +481,7 @@ $instrutores = $consulta->fetchAll();
                                                 <a
                                                     href="excluir.php?id=<?= (int) $instrutor['id'] ?>"
                                                     class="instructor-action delete"
-                                                    title="Excluir instrutor"
+                                                    title="Desativar instrutor"
                                                 >
                                                     <i data-lucide="trash-2"></i>
                                                 </a>
@@ -535,7 +535,7 @@ $instrutores = $consulta->fetchAll();
 </div>
 
 <script>
-    lucide.createIcons();
+    window.lucide?.createIcons();
 </script>
 
 </body>

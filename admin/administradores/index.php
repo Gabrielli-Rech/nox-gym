@@ -1,10 +1,6 @@
-
 <?php
 
-require_once __DIR__ . '/../../config/conexao.php';
-require_once __DIR__ . '/../../includes/autenticacao_admin.php';
-
-exigirAdmin();
+require_once __DIR__ . '/../inicio.php';
 
 if (!function_exists('escapar')) {
     function escapar($valor): string
@@ -17,8 +13,8 @@ $nomeAdmin = $_SESSION['admin_nome'] ?? 'Administrador';
 $emailAdmin = $_SESSION['admin_email'] ?? '';
 $primeiroNome = explode(' ', trim($nomeAdmin))[0];
 
-$pesquisa = trim($_GET['pesquisa'] ?? '');
-$filtroStatus = $_GET['status'] ?? '';
+$pesquisa = trim(entrada($_GET, 'pesquisa'));
+$filtroStatus = entrada($_GET, 'status');
 
 $totalAdministradores = 0;
 $totalAtivos = 0;
@@ -45,8 +41,9 @@ try {
     $parametros = [];
 
     if ($pesquisa !== '') {
-        $sql .= " AND (nome LIKE :pesquisa OR email LIKE :pesquisa)";
+        $sql .= " AND (nome LIKE :pesquisa OR email LIKE :pesquisa_email)";
         $parametros['pesquisa'] = '%' . $pesquisa . '%';
+        $parametros['pesquisa_email'] = $parametros['pesquisa'];
     }
 
     if (in_array($filtroStatus, ['ativo', 'inativo'], true)) {
@@ -62,7 +59,7 @@ try {
     $administradores = $consulta->fetchAll();
 
 } catch (PDOException $e) {
-    error_log($e->getMessage());
+    error_log('NOX GYM: falha em operação administrativa.');
     $erroConsulta = 'Não foi possível carregar os administradores.';
 }
 
@@ -158,9 +155,9 @@ $dataFormatada = date('d/m/Y');
                     <small>Administrador</small>
                 </div>
 
-                <a href="../logout.php" class="logout-button" title="Sair">
+                <form method="post" action="../logout.php"><?php campoCsrf(); ?><button class="logout-button" type="submit" aria-label="Sair">
                     ↪
-                </a>
+                </button></form>
 
             </div>
 
@@ -205,9 +202,14 @@ $dataFormatada = date('d/m/Y');
             </div>
 
         </header>
+        <?php require __DIR__ . '/../../includes/menu_painel_mobile.php'; ?>
 
         <!-- CONTENT -->
         <div class="dashboard-content">
+<?php if (isset($_SESSION['aviso_nox'])): ?>
+    <p class="dashboard-panel" role="status"><?= escapar($_SESSION['aviso_nox']) ?></p>
+    <?php unset($_SESSION['aviso_nox']); ?>
+<?php endif; ?>
 
             <!-- PAGE HEADER -->
             <section class="management-header">
@@ -365,7 +367,7 @@ $dataFormatada = date('d/m/Y');
                                             <div class="admin-person">
 
                                                 <div class="admin-person-avatar">
-                                                    <?php if (!empty($admin['foto'])): ?>
+                                                    <?php if (!empty($admin['foto']) && basename($admin['foto']) === $admin['foto'] && is_file(__DIR__ . '/../../uploads/' . $admin['foto'])): ?>
                                                         <img
                                                             src="../../uploads/<?= escapar($admin['foto']) ?>"
                                                             alt="Foto de <?= escapar($admin['nome']) ?>"
@@ -412,7 +414,7 @@ $dataFormatada = date('d/m/Y');
                                                 <a
                                                     href="excluir.php?id=<?= (int) $admin['id'] ?>"
                                                     class="action-button delete-action"
-                                                    title="Excluir administrador"
+                                                    title="Desativar administrador"
                                                 >
                                                     ×
                                                 </a>

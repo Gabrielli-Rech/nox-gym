@@ -1,18 +1,17 @@
-
 <?php
 
-require_once __DIR__ . '/../config/conexao.php';
-
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-}
+require_once __DIR__ . '/../includes/formularios.php';
+sessaoNox();
+tratarErrosBanco();
 
 $erro = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verificarCsrf();
+    require_once __DIR__ . '/../config/conexao.php';
 
-    $email = trim($_POST['email'] ?? '');
-    $senha = $_POST['senha'] ?? '';
+    $email = trim(entrada($_POST, 'email'));
+    $senha = entrada($_POST, 'senha');
 
     $sql = $pdo->prepare(
         "SELECT id, nome, email, senha, foto
@@ -29,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($admin && password_verify($senha, $admin['senha'])) {
 
         session_regenerate_id(true);
+        $_SESSION = [];
 
         $_SESSION['admin_id'] = $admin['id'];
         $_SESSION['admin_nome'] = $admin['nome'];
@@ -134,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
 
                 <form method="POST" class="login-form">
+            <?php campoCsrf(); ?>
 
                     <div class="input-group">
 

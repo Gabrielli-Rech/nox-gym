@@ -1,10 +1,6 @@
-
 <?php
 
-require_once __DIR__ . '/../../config/conexao.php';
-require_once __DIR__ . '/../../includes/autenticacao_admin.php';
-
-exigirAdmin();
+require_once __DIR__ . '/../inicio.php';
 
 if (!function_exists('escapar')) {
     function escapar($valor): string
@@ -54,11 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } else {
 
-        $nome = trim($_POST['nome'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $senha = $_POST['senha'] ?? '';
-        $confirmarSenha = $_POST['confirmar_senha'] ?? '';
-        $status = $_POST['status'] ?? '';
+        $nome = trim(entrada($_POST, 'nome'));
+        $email = trim(entrada($_POST, 'email'));
+        $senha = entrada($_POST, 'senha');
+        $confirmarSenha = entrada($_POST, 'confirmar_senha');
+        $status = entrada($_POST, 'status');
 
         if ($nome === '' || $email === '') {
             $erro = 'Preencha o nome e o e-mail.';
@@ -75,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (!in_array($status, ['ativo', 'inativo'], true)) {
             $erro = 'Selecione um status válido.';
 
-        } elseif ($senha !== '' && strlen($senha) < 8) {
+        } elseif ($senha !== '' && (strlen($senha) < 8 || strlen($senha) > 72 || str_contains($senha, "\0"))) {
             $erro = 'A nova senha deve possuir pelo menos 8 caracteres.';
 
         } elseif ($senha !== $confirmarSenha) {
@@ -170,6 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ]);
                         }
 
+                        logAdmin($pdo, 'administrador_editado', (int) $id);
                         $pdo->commit();
 
                         // Atualiza os dados da sessão se o administrador
@@ -194,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo->rollBack();
                 }
 
-                error_log($e->getMessage());
+                error_log('NOX GYM: falha em operação administrativa.');
                 $erro = 'Não foi possível atualizar o administrador.';
             }
         }
@@ -292,7 +289,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
                     <small>Administrador</small>
                 </div>
 
-                <a href="../logout.php" class="logout-button" title="Sair">↪</a>
+                <form method="post" action="../logout.php"><?php campoCsrf(); ?><button class="logout-button" type="submit" aria-label="Sair">↪</button></form>
 
             </div>
 
@@ -336,6 +333,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
             </div>
 
         </header>
+        <?php require __DIR__ . '/../../includes/menu_painel_mobile.php'; ?>
 
         <div class="dashboard-content">
 

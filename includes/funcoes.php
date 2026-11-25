@@ -1,4 +1,3 @@
-
 <?php
 
 function limparEntrada(string $valor): string
