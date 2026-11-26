@@ -6,10 +6,13 @@ $ativos = consulta($pdo, "SELECT id, nome FROM treinos WHERE instrutor_id = ? AN
 $titulo = 'Dashboard';
 require __DIR__ . '/../includes/painel.php';
 ?>
-<section class="welcome-section"><div class="welcome-content">
-    <h1>Olá, <?= escapar($instrutor['nome']) ?>.</h1>
-    <p><?= escapar($instrutor['email'] ?? '') ?> <?= escapar($instrutor['telefone'] ?? '') ?></p>
-</div></section>
+<link rel="stylesheet" href="../assets/css/admin/dashboard-instrutor.css">
+<section class="welcome-section">
+    <div class="welcome-content">
+        <h1>Olá, <?= escapar($instrutor['nome']) ?>.</h1>
+        <p><?= escapar($instrutor['email'] ?? '') ?> <?= escapar($instrutor['telefone'] ?? '') ?></p>
+    </div>
+</section>
 <section class="stats-grid">
     <?php foreach (['alunos' => 'Alunos relacionados', 'treinos' => 'Treinos cadastrados', 'ativos' => 'Treinos ativos'] as $chave => $rotulo): ?>
         <article class="stat-card"><strong class="stat-number"><?= (int) $resumo[$chave] ?></strong><span class="stat-description"><?= $rotulo ?></span></article>

@@ -1,7 +1,7 @@
 <?php
 
 // Selecione o ambiente: 'local' ou 'remoto'
-$ambiente = 'remoto';
+$ambiente = 'local';
 
 if ($ambiente === 'local') {
 

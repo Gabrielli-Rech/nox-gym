@@ -1687,10 +1687,6 @@ a {
 }
 
 
-/* ========================================
-   EXCLUSÃO DE ADMINISTRADORES - NOX GYM
-======================================== */
-
 .delete-page {
     padding: 35px;
     max-width: 900px;
@@ -1858,10 +1854,38 @@ button.logout-button {
     }
 }
 
-.dashboard-panel ol {
-    padding-inline-start: 24px;
+
+.user-avatar,
+.topbar-avatar {
+    width: 37px;
+    height: 37px;
+    min-width: 37px;
+    min-height: 37px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
-.dashboard-panel li + li {
-    margin-top: 12px;
+.user-avatar img,
+.topbar-avatar img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    display: block;
+}
+.user-avatar img {
+    border-radius: 11px;
+}
+
+.topbar-avatar img {
+    border-radius: 50%;
 }

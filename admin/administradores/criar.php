@@ -69,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
 
                 $pdo->beginTransaction();
+
                 $sql->execute([
                     $nome,
                     $email,
@@ -77,12 +78,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]);
 
                 logAdmin($pdo, 'administrador_criado', (int) $pdo->lastInsertId());
+
                 $pdo->commit();
+
                 header('Location: index.php?sucesso=criado');
                 exit;
             }
 
         } catch (PDOException $e) {
+
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
             }
@@ -163,13 +167,17 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
 
         </nav>
 
-        <div class="sidebar-section-label management-label">GESTÃO</div>
+        <div class="sidebar-section-label management-label">
+            GESTÃO
+        </div>
 
         <nav class="sidebar-nav">
+
             <a href="../../index.php" class="nav-item">
                 <span class="nav-icon">↗</span>
                 <span>Visualizar site</span>
             </a>
+
         </nav>
 
         <div class="sidebar-bottom">
@@ -185,7 +193,10 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
                     <small>Administrador</small>
                 </div>
 
-                <form method="post" action="../logout.php"><?php campoCsrf(); ?><button class="logout-button" type="submit" aria-label="Sair">↪</button></form>
+                <form method="post" action="../logout.php">
+                    <?php campoCsrf(); ?>
+                    <button class="logout-button" type="submit" aria-label="Sair">↪</button>
+                </form>
 
             </div>
 
@@ -229,6 +240,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
             </div>
 
         </header>
+
         <?php require __DIR__ . '/../../includes/menu_painel_mobile.php'; ?>
 
         <div class="dashboard-content">
@@ -277,6 +289,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
                     <?php endif; ?>
 
                     <form method="POST" class="admin-create-form">
+
                         <?php campoCsrf(); ?>
 
                         <div class="form-field">
@@ -364,6 +377,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
                         </div>
 
                         <div class="form-security-note">
+
                             <span>◈</span>
 
                             <div>
@@ -374,6 +388,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
                                     Ela não ficará visível no banco de dados.
                                 </p>
                             </div>
+
                         </div>
 
                         <div class="form-actions">

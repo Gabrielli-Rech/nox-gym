@@ -267,13 +267,17 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
 
         </nav>
 
-        <div class="sidebar-section-label management-label">GESTÃO</div>
+        <div class="sidebar-section-label management-label">
+            GESTÃO
+        </div>
 
         <nav class="sidebar-nav">
+
             <a href="../../index.php" class="nav-item">
                 <span class="nav-icon">↗</span>
                 <span>Visualizar site</span>
             </a>
+
         </nav>
 
         <div class="sidebar-bottom">
@@ -289,7 +293,10 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
                     <small>Administrador</small>
                 </div>
 
-                <form method="post" action="../logout.php"><?php campoCsrf(); ?><button class="logout-button" type="submit" aria-label="Sair">↪</button></form>
+                <form method="post" action="../logout.php">
+                    <?php campoCsrf(); ?>
+                    <button class="logout-button" type="submit" aria-label="Sair">↪</button>
+                </form>
 
             </div>
 
@@ -333,6 +340,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
             </div>
 
         </header>
+
         <?php require __DIR__ . '/../../includes/menu_painel_mobile.php'; ?>
 
         <div class="dashboard-content">
@@ -467,6 +475,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
                         </div>
 
                         <div class="form-security-note">
+
                             <span>◈</span>
 
                             <div>
@@ -478,6 +487,7 @@ $primeiroNome = explode(' ', trim($nomeAdmin))[0];
                                     será armazenada com password_hash().
                                 </p>
                             </div>
+
                         </div>
 
                         <div class="form-actions">

@@ -100,6 +100,7 @@ $dataFormatada = $dataAtual->format('d/m/Y');
             <a href="mensagens/index.php" class="nav-item">
                 <span class="nav-icon">✉</span>
                 <span>Mensagens</span>
+
                 <?php if ($totalMensagens > 0): ?>
                     <span class="nav-count"><?= $totalMensagens ?></span>
                 <?php endif; ?>
@@ -117,20 +118,43 @@ $dataFormatada = $dataAtual->format('d/m/Y');
         </div>
 
         <nav class="sidebar-nav">
-            <a href="alunos/index.php" class="nav-item"><span class="nav-icon">▤</span><span>Alunos</span></a>
-            <a href="planos/index.php" class="nav-item"><span class="nav-icon">▤</span><span>Planos</span></a>
-            <a href="assinaturas/index.php" class="nav-item"><span class="nav-icon">▤</span><span>Assinaturas</span></a>
-            <a href="exercicios/index.php" class="nav-item"><span class="nav-icon">▤</span><span>Exercícios</span></a>
-            <a href="treinos/index.php" class="nav-item"><span class="nav-icon">▤</span><span>Treinos</span></a>
+
+            <a href="alunos/index.php" class="nav-item">
+                <span class="nav-icon">▤</span>
+                <span>Alunos</span>
+            </a>
+
+            <a href="planos/index.php" class="nav-item">
+                <span class="nav-icon">▤</span>
+                <span>Planos</span>
+            </a>
+
+            <a href="assinaturas/index.php" class="nav-item">
+                <span class="nav-icon">▤</span>
+                <span>Assinaturas</span>
+            </a>
+
+            <a href="exercicios/index.php" class="nav-item">
+                <span class="nav-icon">▤</span>
+                <span>Exercícios</span>
+            </a>
+
+            <a href="treinos/index.php" class="nav-item">
+                <span class="nav-icon">▤</span>
+                <span>Treinos</span>
+            </a>
+
             <a href="../index.php" class="nav-item">
                 <span class="nav-icon">↗</span>
                 <span>Visualizar site</span>
             </a>
+
         </nav>
 
         <div class="sidebar-bottom">
 
             <div class="sidebar-user">
+
                 <div class="user-avatar">
                     <?= strtoupper(substr($primeiroNome, 0, 1)) ?>
                 </div>
@@ -140,9 +164,14 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                     <small>Administrador</small>
                 </div>
 
-                <form method="post" action="logout.php"><?php campoCsrf(); ?><button class="logout-button" type="submit" aria-label="Sair">
-                    ↪
-                </button></form>
+                <form method="post" action="logout.php">
+                    <?php campoCsrf(); ?>
+
+                    <button class="logout-button" type="submit" aria-label="Sair">
+                        ↪
+                    </button>
+                </form>
+
             </div>
 
             <div class="sidebar-version">
@@ -186,6 +215,7 @@ $dataFormatada = $dataAtual->format('d/m/Y');
             </div>
 
         </header>
+
         <?php require __DIR__ . '/../includes/menu_painel_mobile.php'; ?>
 
         <!-- CONTENT -->
@@ -195,6 +225,7 @@ $dataFormatada = $dataAtual->format('d/m/Y');
             <section class="welcome-section">
 
                 <div class="welcome-content">
+
                     <span class="section-tag">
                         <span class="tag-line"></span>
                         PAINEL DE CONTROLE
@@ -209,6 +240,7 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                         Aqui está o resumo da operação da sua academia.
                         Gerencie sua equipe e acompanhe a Nox Gym.
                     </p>
+
                 </div>
 
                 <div class="welcome-decoration">
@@ -222,6 +254,7 @@ $dataFormatada = $dataAtual->format('d/m/Y');
 
             <!-- SECTION TITLE -->
             <section class="section-heading">
+
                 <div>
                     <span class="section-overline">VISÃO GERAL</span>
                     <h2>Resumo da academia</h2>
@@ -230,12 +263,14 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                 <span class="updated-label">
                     Dados atuais do banco
                 </span>
+
             </section>
 
             <!-- STATS -->
             <section class="stats-grid">
 
                 <article class="stat-card">
+
                     <div class="stat-top">
                         <div class="stat-icon icon-green">♙</div>
                         <span class="stat-category">ALUNOS</span>
@@ -250,9 +285,11 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                     </span>
 
                     <div class="stat-bottom-line green-line"></div>
+
                 </article>
 
                 <article class="stat-card">
+
                     <div class="stat-top">
                         <div class="stat-icon icon-cyan">♟</div>
                         <span class="stat-category">EQUIPE</span>
@@ -267,9 +304,11 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                     </span>
 
                     <div class="stat-bottom-line cyan-line"></div>
+
                 </article>
 
                 <article class="stat-card">
+
                     <div class="stat-top">
                         <div class="stat-icon icon-purple">✉</div>
                         <span class="stat-category">COMUNICAÇÃO</span>
@@ -284,9 +323,11 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                     </span>
 
                     <div class="stat-bottom-line purple-line"></div>
+
                 </article>
 
                 <article class="stat-card">
+
                     <div class="stat-top">
                         <div class="stat-icon icon-orange">▤</div>
                         <span class="stat-category">CONTEÚDO</span>
@@ -301,6 +342,7 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                     </span>
 
                     <div class="stat-bottom-line orange-line"></div>
+
                 </article>
 
             </section>
@@ -311,17 +353,20 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                 <div class="dashboard-panel quick-panel">
 
                     <div class="panel-heading">
+
                         <div>
                             <span class="section-overline">ACESSO RÁPIDO</span>
                             <h2>Gerencie sua academia</h2>
                         </div>
 
                         <span class="panel-decoration">↗</span>
+
                     </div>
 
                     <div class="quick-actions">
 
                         <a href="administradores/index.php" class="quick-action">
+
                             <div class="quick-icon green-bg">♙</div>
 
                             <div class="quick-info">
@@ -330,9 +375,11 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                             </div>
 
                             <span class="quick-arrow">→</span>
+
                         </a>
 
                         <a href="instrutores/index.php" class="quick-action">
+
                             <div class="quick-icon cyan-bg">♟</div>
 
                             <div class="quick-info">
@@ -341,9 +388,11 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                             </div>
 
                             <span class="quick-arrow">→</span>
+
                         </a>
 
                         <a href="mensagens/index.php" class="quick-action">
+
                             <div class="quick-icon purple-bg">✉</div>
 
                             <div class="quick-info">
@@ -352,9 +401,11 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                             </div>
 
                             <span class="quick-arrow">→</span>
+
                         </a>
 
                         <a href="conteudos/index.php" class="quick-action">
+
                             <div class="quick-icon orange-bg">▤</div>
 
                             <div class="quick-info">
@@ -363,6 +414,7 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                             </div>
 
                             <span class="quick-arrow">→</span>
+
                         </a>
 
                     </div>
@@ -372,15 +424,18 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                 <div class="dashboard-panel system-panel">
 
                     <div class="panel-heading">
+
                         <div>
                             <span class="section-overline">SISTEMA</span>
                             <h2>Informações gerais</h2>
                         </div>
 
                         <span class="system-icon">◈</span>
+
                     </div>
 
                     <div class="system-highlight">
+
                         <div class="system-highlight-top">
                             <span class="system-indicator"></span>
                             <span>PAINEL ADMINISTRATIVO</span>
@@ -391,6 +446,7 @@ $dataFormatada = $dataAtual->format('d/m/Y');
                         <p>
                             O acesso administrativo está ativo e pronto para gerenciamento.
                         </p>
+
                     </div>
 
                     <div class="system-detail">

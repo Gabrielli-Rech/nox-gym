@@ -11,12 +11,12 @@ require_once __DIR__ . '/includes/header.php'; ?>
         $linhasBanner = $tituloBanner !== '' ? preg_split('/\s+(?=\S+$)/u', $tituloBanner, 2) : [];
         ?>
         <h1><?php if (count($linhasBanner) === 2): ?>
-            <?= $linhasBanner[0] ?><br><span><?= $linhasBanner[1] ?></span>
-        <?php elseif ($linhasBanner): ?>
-            <?= $linhasBanner[0] ?>
-        <?php else: ?>
-            Supere seus<br><span>limites.</span>
-        <?php endif; ?></h1>
+                <?= $linhasBanner[0] ?><br><span><?= $linhasBanner[1] ?></span>
+            <?php elseif ($linhasBanner): ?>
+                <?= $linhasBanner[0] ?>
+            <?php else: ?>
+                Supere seus<br><span>limites.</span>
+            <?php endif; ?></h1>
         <p><?= conteudo('home_banner', 'texto', 'Uma estrutura preparada para quem leva evolução a sério. Treine com propósito, constância e acompanhamento.') ?></p>
         <div class="hero-actions">
             <a class="btn" href="planos.php">Conheça os planos ↗</a>
@@ -48,14 +48,15 @@ require_once __DIR__ . '/includes/header.php'; ?>
         <div class="section-head">
             <div><span class="section-kicker"><?= conteudo('home_diferenciais', 'subtitulo', 'Conheça a Nox') ?></span>
                 <h2><?= conteudo('home_diferenciais', 'titulo', 'Treine do seu jeito.') ?></h2>
-            <?php if ($texto = conteudo('home_diferenciais', 'texto')): ?><p><?= $texto ?></p><?php endif; ?>
+                <?php if ($texto = conteudo('home_diferenciais', 'texto')): ?><p><?= $texto ?></p><?php endif; ?>
             </div><a class="btn btn-outline" href="treinos.php">Ver modalidades ↗</a>
         </div>
         <div class="grid">
             <article class="card">
                 <?php if ($imagem = imagemConteudo('home_diferenciais', '')): ?>
                     <img src="<?= $imagem ?>" alt="Modalidades da Nox Gym">
-                <?php else: imagemPublica('assets/img/musc.jpg', 'Treinamento de musculação', 'assets/img/academia.jpg'); endif; ?>
+                <?php else: imagemPublica('assets/img/musc.jpg', 'Treinamento de musculação', 'assets/img/academia.jpg');
+                endif; ?>
                 <div class="card-body"><span class="card-tag">Força</span>
                     <h3>Musculação</h3>
                     <p>Treinos estruturados para desenvolver força, resistência e consistência.</p>

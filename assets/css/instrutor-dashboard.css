@@ -1,0 +1,223 @@
+
+/* ========================================
+   DASHBOARD DO INSTRUTOR - NOX GYM
+======================================== */
+
+.welcome-section {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 190px;
+    padding: 38px;
+    margin-bottom: 28px;
+    background: linear-gradient(120deg, #111A28, #172638);
+    border: 1px solid #26364B;
+    border-radius: 16px;
+}
+
+.welcome-section::after {
+    content: "";
+    position: absolute;
+    width: 230px;
+    height: 230px;
+    right: -65px;
+    top: -95px;
+    border: 35px solid rgba(204, 255, 0, .07);
+    border-radius: 50%;
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 1;
+}
+
+.welcome-content h1 {
+    color: #F4F7FB;
+    font-family: 'Outfit', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.welcome-content p {
+    color: #9BA9BA;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* ========================================
+   INDICADORES
+======================================== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 150px;
+    padding: 25px;
+    background: #111A28;
+    border: 1px solid #202D3E;
+    border-radius: 14px;
+    transition: .25s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(204, 255, 0, .4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .2);
+}
+
+.stat-number {
+    color: #CCFF00;
+    font-family: 'Outfit', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+}
+
+.stat-description {
+    color: #9BA9BA;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ========================================
+   PAINEL DE TREINOS
+======================================== */
+
+.dashboard-panel {
+    padding: 28px;
+    background: #111A28;
+    border: 1px solid #202D3E;
+    border-radius: 14px;
+}
+
+.dashboard-panel h2 {
+    color: #F4F7FB;
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 23px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #202D3E;
+}
+
+/* ========================================
+   AÇÕES RÁPIDAS
+======================================== */
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.quick-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    min-height: 65px;
+    padding: 17px 20px;
+    background: #0C121D;
+    border: 1px solid #26364B;
+    border-radius: 10px;
+    color: #DCE5EF;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.quick-action::after {
+    content: "→";
+    color: #CCFF00;
+    font-size: 20px;
+    transition: .2s ease;
+}
+
+.quick-action:hover {
+    background: #172334;
+    border-color: #CCFF00;
+    color: #CCFF00;
+}
+
+.quick-action:hover::after {
+    transform: translateX(4px);
+}
+
+.quick-actions > p {
+    grid-column: 1 / -1;
+    padding: 25px;
+    background: #0C121D;
+    border: 1px dashed #34445A;
+    border-radius: 10px;
+    color: #718096;
+    text-align: center;
+    font-size: 13px;
+}
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 900px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 600px) {
+    .welcome-section {
+        min-height: 155px;
+        padding: 25px;
+    }
+
+    .welcome-content h1 {
+        font-size: 25px;
+    }
+
+    .welcome-content p {
+        font-size: 12px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
+    }
+
+    .stat-card:last-child {
+        grid-column: auto;
+    }
+
+    .stat-card {
+        min-height: 120px;
+        padding: 20px;
+    }
+
+    .stat-number {
+        font-size: 30px;
+    }
+
+    .dashboard-panel {
+        padding: 20px;
+    }
+
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
