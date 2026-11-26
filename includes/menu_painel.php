@@ -2,7 +2,7 @@
 $prefixo = $prefixo ?? '../';
 $areaInstrutor = $areaInstrutor ?? false;
 $rotas = $areaInstrutor ? [
-    'index.php' => 'Dashboard', 'alunos.php' => 'Alunos', 'treinos.php' => 'Treinos',
+    'dashboard.php' => 'Dashboard', 'alunos.php' => 'Alunos', 'treinos.php' => 'Treinos',
 ] : [
     'dashboard.php' => 'Dashboard', 'administradores/index.php' => 'Administradores',
     'instrutores/index.php' => 'Instrutores', 'alunos/index.php' => 'Alunos',
